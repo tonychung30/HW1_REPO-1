@@ -21,4 +21,40 @@ library(stargazer)
 library(lmtest)
 library(arm)
 library(sf)
+library(classInt)
 ```
+
+```{r}
+url <- "https://github.com/DACSS-CSSmeths/Spatial-Exploring/raw/refs/heads/main/maps/countriesCIA.gpkg"
+
+temp_file <- tempfile(fileext = ".gpkg")
+download.file(url, temp_file, mode = "wb")
+
+countries <- st_read(temp_file)
+
+head(countries)
+```
+```{r}
+obesity <- countries$obesity
+l_adcm <- function(breaks, data) {
+  bins <- cut(data, breaks = breaks, include.lowest = TRUE, labels = FALSE)
+  class_means <- tapply(data, bins, mean, na.rm = TRUE)
+  adcm <- mean(abs(data - class_means[bins]), na.rm = TRUE)
+  return(adcm)
+}
+
+methods <- c("equal", "quantile", "jenks", "fisher")
+results <- data.frame(Method = character(), ADCM = numeric(), stringsAsFactors = FALSE)
+
+for (method in methods) {
+  breaks <- classIntervals(obesity, n = 5, style = method)$brks
+  adcm_value <- l_adcm(breaks, obesity)
+  results <- rbind(results, data.frame(Method = method, ADCM = adcm_value))
+}
+
+best_method <- results[which.min(results$ADCM), ]
+
+print(results)
+```
+
+
