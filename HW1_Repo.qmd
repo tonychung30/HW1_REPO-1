@@ -1,0 +1,24 @@
+---
+title: "HW1_Repo"
+author: "Tony Chung"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(haven)
+library(ggplot2)
+library(rstatix)
+library(tidyverse)
+library(skimr)
+library(descr)
+library(labelled)
+library(alr4)
+library(smss)
+library(ggeffects)
+library(ggplot2)
+library(stargazer)
+library(lmtest)
+library(arm)
+library(sf)
+```
